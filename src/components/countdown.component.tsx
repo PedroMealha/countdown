@@ -1,33 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import './countdown.css';
-import Digit from './digit.component';
+import React, { useState, useEffect } from 'react';
+import './Countdown.css';
 
 interface CountdownProps {
 	initialCount: number;
 }
 
 const Countdown: React.FC<CountdownProps> = ({ initialCount }) => {
-	const [count, setCount] = useState(initialCount.toString().split(''));
+	const [time, setTime] = useState<number>(initialCount);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
-			const currentCount = parseInt(count.join(''), 10);
-			if (currentCount > 0) {
-				const newCount = (currentCount - 1).toString().split('');
-				while (newCount.length < count.length) {
-					newCount.unshift('0');
-				}
-				setCount(newCount);
-			}
+			setTime((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
 		}, 1000);
 
 		return () => clearInterval(interval);
-	}, [count]);
+	}, []);
+
+	const getDialRotation = (digit: number): number => {
+		return digit * 36;
+	};
+
+	const formatTime = (time: number): number[] => {
+		const hundreds = Math.floor(time / 100);
+		const tens = Math.floor((time % 100) / 10);
+		const ones = time % 10;
+		return [hundreds, tens, ones];
+	};
+
+	const displayDigits = formatTime(time);
 
 	return (
-		<div className='digit-container'>
-			{count.map((digit, index) => (
-				<Digit key={index} value={digit} />
+		<div className='countdown-container'>
+			{displayDigits.map((digit, index) => (
+				<div key={index} className='dial'>
+					<div className='numbers' style={{ transform: `rotateX(${getDialRotation(digit)}deg)` }}>
+						{Array.from({ length: 10 }).map((_, numIndex) => (
+							<div key={numIndex} className='number'>
+								{numIndex}
+							</div>
+						))}
+					</div>
+				</div>
 			))}
 		</div>
 	);
