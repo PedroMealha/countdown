@@ -1,27 +1,23 @@
 .countdown {
-	perspective: 200px;
+	/* perspective: 200px; */
 	display: flex;
-	height: 1em;
-	/* overflow: visible hidden; */
+	overflow: visible hidden;
 	font-size: 3em;
 }
 
 .dial {
-	flex: 1;
-	width: 1ch;
-	height: 100%;
 	position: relative;
+	width: 1ch;
+	height: 1em;
 	transform-style: preserve-3d;
 	transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.face {
+.digit {
 	position: absolute;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	/* backface-visibility: hidden; */
-	border-radius: 50%;
-	width: 100%;
+	backface-visibility: hidden;
 	height: 100%;
 }
