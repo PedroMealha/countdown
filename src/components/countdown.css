@@ -1,23 +1,37 @@
-.countdown {
-	/* perspective: 200px; */
+.counter-slot-machine {
 	display: flex;
-	overflow: visible hidden;
-	font-size: 3em;
+	align-items: center;
+	justify-content: center;
+	perspective: 200px;
+	height: 1em;
+}
+
+.slot {
+	width: 1ch;
+	height: 100%;
 }
 
 .dial {
-	position: relative;
 	width: 1ch;
-	height: 1em;
+	height: 100%;
 	transform-style: preserve-3d;
-	transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1);
+	transition: transform 1s;
 }
 
-.digit {
+.number {
 	position: absolute;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	backface-visibility: hidden;
+	width: 100%;
 	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1em;
+	transform-origin: center;
+}
+
+/* Keyframes for rotating each dial */
+@keyframes rotateDial {
+	to {
+		transform: rotateX(1turn);
+	}
 }

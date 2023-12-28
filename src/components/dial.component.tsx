@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ROTATION_INCREMENT } from './countdown.component';
+// import { ROTATION_INCREMENT } from './countdown.component';
 
 const Dial = ({ number, initialRotation }: { number: number; initialRotation: number }) => {
 	const [rotation, setRotation] = useState(initialRotation);
