@@ -1,47 +1,70 @@
-import React, { useState, useEffect } from 'react';
-import './Countdown.css';
+import { useState, useEffect } from 'react';
+import './countdown.css';
 
-interface CountdownProps {
-	initialCount: number;
-}
-
-const Countdown: React.FC<CountdownProps> = ({ initialCount }) => {
-	const [time, setTime] = useState<number>(initialCount);
+const Dial = ({ number, initialRotation }: { number: number; initialRotation: number }) => {
+	const [rotation, setRotation] = useState(initialRotation);
+	const [startCountdown, setStartCountdown] = useState(false);
 
 	useEffect(() => {
-		const interval = setInterval(() => {
-			setTime((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
+		setTimeout(() => {
+			setStartCountdown(true);
 		}, 1000);
-
-		return () => clearInterval(interval);
 	}, []);
 
-	const getDialRotation = (digit: number): number => {
-		return digit * 36;
-	};
+	useEffect(() => {
+		setRotation((prev) => prev + 36);
+	}, [number]);
 
-	const formatTime = (time: number): number[] => {
-		const hundreds = Math.floor(time / 100);
-		const tens = Math.floor((time % 100) / 10);
-		const ones = time % 10;
-		return [hundreds, tens, ones];
-	};
+	const faces = Array.from({ length: 10 }).map((_, index) => {
+		const rotationDegree = 36 * index;
+		const style = {
+			transform: `rotateX(${rotationDegree}deg) translateZ(1.5em)`,
+		};
+		return (
+			<div className='face' style={style} key={index}>
+				{index}
+			</div>
+		);
+	});
 
-	const displayDigits = formatTime(time);
+	const dialStyle = startCountdown
+		? {
+				transform: `rotateX(${rotation}deg)`,
+		  }
+		: {
+				transform: `rotateX(${rotation}deg)`,
+				transition: 'none',
+		  };
 
 	return (
-		<div className='countdown-container'>
-			{displayDigits.map((digit, index) => (
-				<div key={index} className='dial'>
-					<div className='numbers' style={{ transform: `rotateX(${getDialRotation(digit)}deg)` }}>
-						{Array.from({ length: 10 }).map((_, numIndex) => (
-							<div key={numIndex} className='number'>
-								{numIndex}
-							</div>
-						))}
-					</div>
-				</div>
-			))}
+		<div className='dial' style={dialStyle}>
+			{faces}
+		</div>
+	);
+};
+
+const Countdown = ({ initialCount }: { initialCount: number }) => {
+	const [count, setCount] = useState(initialCount);
+
+	useEffect(() => {
+		if (count > 0) {
+			const timer = setTimeout(() => setCount(count - 1), 1000);
+			return () => clearTimeout(timer);
+		}
+	}, [count]);
+
+	const numberOfDials = String(initialCount).length;
+
+	const paddedCount = String(count).padStart(numberOfDials, '0');
+	const digits = paddedCount.split('').map(Number);
+
+	return (
+		<div className='countdown' style={{minWidth: `${digits.length}ch`}}>
+			{digits.map((num, index) => {
+				const digit = parseInt(paddedCount[index], 10);
+				const initialRotation = -36 * digit - 72; // Adjust as needed
+				return <Dial key={index} number={num} initialRotation={initialRotation} />;
+			})}
 		</div>
 	);
 };
