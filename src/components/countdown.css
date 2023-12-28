@@ -1,14 +1,9 @@
-.counter-slot-machine {
+.countdown {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	perspective: 200px;
 	height: 1em;
-}
-
-.slot {
-	width: 1ch;
-	height: 100%;
 }
 
 .dial {
@@ -19,6 +14,7 @@
 }
 
 .number {
+	backface-visibility: hidden;
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -29,7 +25,6 @@
 	transform-origin: center;
 }
 
-/* Keyframes for rotating each dial */
 @keyframes rotateDial {
 	to {
 		transform: rotateX(1turn);
