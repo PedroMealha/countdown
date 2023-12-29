@@ -12,7 +12,7 @@
 	width: 1ch;
 	height: 100%;
 	transform-style: preserve-3d;
-	transition: transform cubic-bezier(0.165, 0.84, 0.44, 1);
+	transition: transform cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .number {
@@ -25,10 +25,4 @@
 	justify-content: center;
 	transform-origin: center;
 	will-change: transform;
-}
-
-@keyframes rotateDial {
-	to {
-		transform: rotateX(1turn);
-	}
 }
