@@ -1,44 +1,33 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 interface DialProps {
-	digit: string;
-	isIncrementing: boolean;
-	speed?: number;
-	isLeadingZero: boolean;
+	currentDigit: string;
+	finalDigit: string;
+	duration: number;
 }
 
-const Dial: React.FC<DialProps> = ({ digit, isIncrementing, speed, isLeadingZero }) => {
-	const [rotation, setRotation] = useState(-36 * parseInt(digit, 10));
+const Dial: React.FC<DialProps> = ({ currentDigit, finalDigit, duration }) => {
+	const getRandomRotation = (digit: string, finalDigit: string) => {
+		const extraRotations = Math.floor(Math.random() * 3 + 1);
+		const startRotation = -36 * parseInt(digit, 10);
+		const finalRotation = -36 * parseInt(finalDigit, 10);
+		return startRotation - 360 * extraRotations + (finalRotation - startRotation);
+	};
+
+	const [rotation, setRotation] = useState(getRandomRotation(currentDigit, finalDigit));
 
 	useEffect(() => {
-		setRotation((prevRotation) => {
-			const expectedRotation = -36 * parseInt(digit, 10);
-			let rotationIncrement = expectedRotation - (prevRotation % 360);
-			if (isIncrementing) {
-				if (digit === '0' && rotationIncrement > 0) {
-					rotationIncrement -= 360;
-				}
-			} else {
-				if (digit === '9' && rotationIncrement > 0) {
-					rotationIncrement -= 360;
-				} else if (rotationIncrement < -36) {
-					rotationIncrement += 360;
-				}
-			}
-
-			return prevRotation + rotationIncrement;
-		});
-	}, [digit, isIncrementing]);
+		setRotation(-36 * parseInt(finalDigit, 10));
+	}, [finalDigit, duration]);
 
 	return (
-		<div className='dial' style={{ transform: `rotateX(${rotation}deg)`, transitionDuration: `${speed}ms` }}>
+		<div className='dial' style={{ transform: `rotateX(${rotation}deg)`, transitionDuration: `${duration}ms` }}>
 			{[...Array(10)].map((_, index) => (
 				<div
 					key={index}
 					className='number'
 					style={{
-						transform: `rotateX(${index * 36}deg) translateZ(2em)`,
-						opacity: isLeadingZero && index === 0 ? 0 : 1,
+						transform: `rotateX(${index * 36}deg) translateZ(1.5em)`,
 					}}>
 					{index}
 				</div>

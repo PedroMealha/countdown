@@ -2,9 +2,9 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	/* perspective: 200px; */
 	font-size: 1em;
 	height: 1em;
+	/* perspective: 200px; */
 	overflow: hidden;
 }
 
@@ -12,7 +12,7 @@
 	width: 1ch;
 	height: 100%;
 	transform-style: preserve-3d;
-	transition: transform cubic-bezier(0.785, 0.135, 0.15, 0.86);
+	transition: transform cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .number {

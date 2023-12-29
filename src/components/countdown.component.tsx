@@ -1,43 +1,38 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Dial from './dial.component';
 import './countdown.css';
 
 interface CountdownProps {
-	startNumber: number;
 	endNumber: number;
-	speed?: number;
+	duration?: number;
 }
 
-const Countdown: React.FC<CountdownProps> = ({ startNumber, endNumber, speed = 1000 }) => {
-	const [currentNumber, setCurrentNumber] = useState(startNumber);
-	const isIncrementing = endNumber > startNumber;
-
-	const maxDigits = Math.max(startNumber.toString().length, endNumber.toString().length);
-
-	useEffect(() => {
-		const interval = setInterval(() => {
-			setCurrentNumber((prev) => {
-				if ((isIncrementing && prev === endNumber) || (!isIncrementing && prev === endNumber)) {
-					clearInterval(interval);
-					return prev;
-				}
-				return prev + (isIncrementing ? 1 : -1);
-			});
-		}, speed);
-
-		return () => clearInterval(interval);
-	}, [startNumber, endNumber, isIncrementing]);
+const Countdown: React.FC<CountdownProps> = ({ endNumber, duration = 1000 }) => {
+	const getRandomNumber = (digits: number) =>
+		Math.floor(Math.random() * (9 * Math.pow(10, digits - 1))) + Math.pow(10, digits - 1);
+	const [currentNumber] = useState(getRandomNumber(endNumber.toString().length).toString());
+	const maxDigits = endNumber.toString().length;
 
 	const renderDials = () => {
 		const numberString = currentNumber.toString().padStart(maxDigits, '0');
 
 		return numberString.split('').map((digit, i) => {
-			const isLeadingZero = i === 0;
-			return <Dial key={i} digit={digit} isIncrementing={isIncrementing} speed={speed} isLeadingZero={isLeadingZero} />;
+			return (
+				<Dial
+					key={i}
+					currentDigit={digit}
+					finalDigit={endNumber.toString().padStart(maxDigits, '0')[i]}
+					duration={duration}
+				/>
+			);
 		});
 	};
 
-	return <div className='countdown'>{renderDials()}</div>;
+	return (
+		<div className='countdown' style={{ width: `${maxDigits}ch` }}>
+			{renderDials()}
+		</div>
+	);
 };
 
 export default Countdown;
