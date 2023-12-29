@@ -6,13 +6,14 @@
 	height: 1em;
 	/* perspective: 200px; */
 	overflow: hidden;
+	transition: filter linear;
 }
 
 .dial {
 	width: 1ch;
 	height: 100%;
 	transform-style: preserve-3d;
-	transition: transform cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	transition: transform cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 .number {
