@@ -2,15 +2,17 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	perspective: 200px;
+	/* perspective: 200px; */
+	font-size: 1em;
 	height: 1em;
+	overflow: hidden;
 }
 
 .dial {
 	width: 1ch;
 	height: 100%;
 	transform-style: preserve-3d;
-	transition: transform 1s;
+	transition: transform cubic-bezier(0.785, 0.135, 0.15, 0.86);
 }
 
 .number {
@@ -21,8 +23,8 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 1em;
 	transform-origin: center;
+	will-change: transform;
 }
 
 @keyframes rotateDial {

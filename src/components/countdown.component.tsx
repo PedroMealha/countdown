@@ -4,9 +4,11 @@ import './countdown.css';
 interface DialProps {
 	digit: string;
 	isIncrementing: boolean;
+	speed?: number;
+	isLeadingZero: boolean;
 }
 
-const Dial: React.FC<DialProps> = ({ digit, isIncrementing }) => {
+const Dial: React.FC<DialProps> = ({ digit, isIncrementing, speed, isLeadingZero }) => {
 	const [rotation, setRotation] = useState(-36 * parseInt(digit, 10));
 
 	useEffect(() => {
@@ -30,9 +32,15 @@ const Dial: React.FC<DialProps> = ({ digit, isIncrementing }) => {
 	}, [digit, isIncrementing]);
 
 	return (
-		<div className='dial' style={{ transform: `rotateX(${rotation}deg)` }}>
+		<div className='dial' style={{ transform: `rotateX(${rotation}deg)`, transitionDuration: `${speed}ms` }}>
 			{[...Array(10)].map((_, index) => (
-				<div key={index} className='number' style={{ transform: `rotateX(${index * 36}deg) translateZ(50px)` }}>
+				<div
+					key={index}
+					className='number'
+					style={{
+						transform: `rotateX(${index * 36}deg) translateZ(2em)`,
+						opacity: isLeadingZero && index === 0 ? 0 : 1,
+					}}>
 					{index}
 				</div>
 			))}
@@ -43,34 +51,36 @@ const Dial: React.FC<DialProps> = ({ digit, isIncrementing }) => {
 interface CountdownProps {
 	startNumber: number;
 	endNumber: number;
+	speed?: number;
 }
 
-const Countdown: React.FC<CountdownProps> = ({ startNumber, endNumber }) => {
+const Countdown: React.FC<CountdownProps> = ({ startNumber, endNumber, speed = 1000 }) => {
 	const [currentNumber, setCurrentNumber] = useState(startNumber);
 	const isIncrementing = endNumber > startNumber;
 
+	const maxDigits = Math.max(startNumber.toString().length, endNumber.toString().length);
+
 	useEffect(() => {
-		const timeout = setTimeout(() => {
-			const interval = setInterval(() => {
-				setCurrentNumber((prev) => {
-					if ((isIncrementing && prev === endNumber) || (!isIncrementing && prev === endNumber)) {
-						clearInterval(interval);
-						return prev;
-					}
-					return prev + (isIncrementing ? 1 : -1);
-				});
-			}, 1000);
+		const interval = setInterval(() => {
+			setCurrentNumber((prev) => {
+				if ((isIncrementing && prev === endNumber) || (!isIncrementing && prev === endNumber)) {
+					clearInterval(interval);
+					return prev;
+				}
+				return prev + (isIncrementing ? 1 : -1);
+			});
+		}, speed);
 
-			return () => clearInterval(interval);
-		}, 1000);
-
-		return () => clearTimeout(timeout);
+		return () => clearInterval(interval);
 	}, [startNumber, endNumber, isIncrementing]);
 
 	const renderDials = () => {
-		const numberString = currentNumber.toString().padStart(10, '0');
+		const numberString = currentNumber.toString().padStart(maxDigits, '0');
 
-		return numberString.split('').map((digit, i) => <Dial key={i} digit={digit} isIncrementing={isIncrementing} />);
+		return numberString.split('').map((digit, i) => {
+			const isLeadingZero = i === 0;
+			return <Dial key={i} digit={digit} isIncrementing={isIncrementing} speed={speed} isLeadingZero={isLeadingZero} />;
+		});
 	};
 
 	return <div className='countdown'>{renderDials()}</div>;
